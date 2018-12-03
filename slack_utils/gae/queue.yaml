@@ -1,0 +1,13 @@
+queue:
+- name: default
+  rate: 10/s
+  bucket_size: 200
+
+- name: slack
+  rate: 1/s
+  bucket_size: 200
+  max_concurrent_requests: 1
+  retry_parameters:
+    min_backoff_seconds: 60
+    max_doublings: 3
+    task_retry_limit: 3
