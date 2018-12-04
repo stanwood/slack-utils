@@ -25,7 +25,7 @@ import webapp2
 from google.appengine.api import memcache
 
 from slack_utils import (
-    config,
+    slack_config,
     client,
     mixins
 )
@@ -37,7 +37,7 @@ class SlackMixin(mixins.Base):
 
     @property
     def slack_tokens(self):
-        return SlackToken.get_team_tokens(config.SLACK_TEAM)
+        return SlackToken.get_team_tokens(slack_config.SLACK_TEAM)
 
     @webapp2.cached_property
     def slack(self):

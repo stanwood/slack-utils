@@ -23,7 +23,7 @@ import abc
 import logging
 
 from slack_utils import (
-    config,
+    slack_config,
     client
 )
 from slack_utils.errors import (
@@ -42,7 +42,7 @@ class Base(object):
 
     @property
     def admin_im_channel(self):
-        return self.slack.request('im.open', {'user': config.SLACK_ADMIN_USER_ID})['channel']['id']
+        return self.slack.request('im.open', {'user': slack_config.SLACK_ADMIN_USER_ID})['channel']['id']
 
     @property
     def slack_users(self):
@@ -70,7 +70,7 @@ class Base(object):
 
     def open_channel(self, users):
 
-        users = set(users) - set(config.SLACK_IGNORE_USERS_IDS)
+        users = set(users) - set(slack_config.SLACK_IGNORE_USERS_IDS)
         users.discard(None)
 
         if len(users) == 1:
@@ -104,7 +104,7 @@ class Base(object):
         self.slack.request(
             'chat.postMessage',
             {
-                'channel': self.open_channel([config.SLACK_ADMIN_USER_ID]),
+                'channel': self.open_channel([slack_config.SLACK_ADMIN_USER_ID]),
                 'text': message
             }
         )

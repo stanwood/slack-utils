@@ -19,9 +19,15 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
+import logging
 import os
 
 
 SLACK_ADMIN_USER_ID = os.environ.get('SLACK_ADMIN_USER_ID')
 SLACK_IGNORE_USERS_IDS = os.environ.get('SLACK_IGNORE_USERS_IDS', '').split(',')
 SLACK_TEAM = os.environ.get('SLACK_TEAM')
+
+try:
+    from config import *
+except ImportError:
+    logging.info('config.py not found in root directory')
