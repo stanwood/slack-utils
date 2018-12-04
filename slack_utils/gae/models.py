@@ -19,6 +19,9 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
+import random
+import string
+
 from google.appengine.ext import ndb
 
 from slack_utils.errors import SlackTokenError
@@ -86,3 +89,28 @@ class SlackToken(ndb.Model):
             return stored_tokens.bot_access_token, stored_tokens.access_token
         except AttributeError:
             raise SlackTokenError("Tokens not found for user {}".format(user_id))
+
+
+class SlackAuthRequestError(Exception):
+    pass
+
+
+class SlackAuthRequest(ndb.Model):
+    created = ndb.DateTimeProperty(auto_now_add=True)
+    updated = ndb.DateTimeProperty(auto_now=True)
+
+    state = ndb.StringProperty()
+
+    @classmethod
+    def save_state(cls):
+        state = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(64))
+        cls(state=state).put()
+        return state
+
+    @classmethod
+    def validate_state(cls, state):
+        stored_state = cls.query(cls.state == state).get(keys_only=True)
+        if stored_state:
+            stored_state.delete()
+        else:
+            raise SlackAuthRequestError("Invalid state {}".format(state))

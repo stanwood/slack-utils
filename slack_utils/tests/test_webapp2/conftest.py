@@ -55,7 +55,7 @@ def taskqueue(testbed):
 
 
 @pytest.fixture
-def app(testbed):
+def queue_app(testbed):
     from slack_utils.gae.queue import SlackQueueHandler
     app = webapp2.WSGIApplication(
         (

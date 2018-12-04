@@ -22,11 +22,11 @@
 import abc
 import logging
 
-from slack import (
+from slack_utils import (
     config,
     client
 )
-from slack.errors import (
+from slack_utils.errors import (
     SlackMixinError
 )
 
