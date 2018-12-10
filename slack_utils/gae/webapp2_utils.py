@@ -40,6 +40,10 @@ class SlackMixin(mixins.Base):
         return SlackToken.get_team_tokens(slack_config.SLACK_TEAM)
 
     @webapp2.cached_property
+    def user_id(self):
+        return self.request.get('user_id')
+
+    @webapp2.cached_property
     def slack(self):
         return client.Slack(*self.slack_tokens)
 

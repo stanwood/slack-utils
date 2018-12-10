@@ -107,3 +107,24 @@ class Slack(object):
 
     def delete_message(self, message):
         return self.request('chat.delete', message)
+
+    def post_ephemeral_message(self, payload):
+        logging.debug(payload)
+        return self.request('chat.postEphemeral', payload)
+
+    def get_message_permalink(self, payload):
+        return self.request('chat.getPermalink', payload)
+
+    def set_user_status(self, message):
+        return self.request('users.profile.set', message)
+
+    def get_user_profile(self):
+        return self.request(
+            'users.profile.get',
+            {
+                'as_user': True,
+            }
+        )
+
+    def user_info(self, user_id):
+        return self.request('users.info', {'user': user_id})
