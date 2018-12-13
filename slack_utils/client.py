@@ -65,7 +65,7 @@ class Slack(object):
         else:
             return input_value
 
-    def request(self, method, message=None, headers=None):
+    def request(self, method, message=None, headers=None, url=None):
         if message is None:
             message = {}
         if headers is None:
@@ -81,7 +81,7 @@ class Slack(object):
         logging.debug('POST {} {}'.format(method, message))
 
         response = requests.post(
-            url=self.BASE_URL + method,
+            url=url or self.BASE_URL + method,
             data=urllib.urlencode(message),
             headers=headers,
         )
@@ -102,8 +102,8 @@ class Slack(object):
     def post_message(self, message):
         return self.request('chat.postMessage', message)
 
-    def update_message(self, message):
-        return self.request('chat.update', message)
+    def update_message(self, message, url=None):
+        return self.request('chat.update', message, url=None)
 
     def delete_message(self, message):
         return self.request('chat.delete', message)
@@ -117,6 +117,14 @@ class Slack(object):
 
     def set_user_status(self, message):
         return self.request('users.profile.set', message)
+
+    def search_message(self, message):
+        """
+        API Reference:
+            https://api.slack.com/methods/search.messages
+        """
+        message['as_user'] = True
+        return self.request('search.messages', message)
 
     def get_user_profile(self):
         return self.request(
