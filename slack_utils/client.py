@@ -118,6 +118,12 @@ class Slack(object):
     def set_user_status(self, message):
         return self.request('users.profile.set', message)
 
+    def set_dnd_snooze(self, message):
+        return self.request('dnd.setSnooze', message)
+
+    def get_user_presence(self, message):
+        return self.request('users.getPresence', message)
+
     def search_message(self, message):
         """
         API Reference:
