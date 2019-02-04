@@ -65,7 +65,7 @@ class Slack(object):
         else:
             return input_value
 
-    def request(self, method, message=None, headers=None):
+    def request(self, method, message=None, headers=None, url=None):
         if message is None:
             message = {}
         if headers is None:
@@ -81,7 +81,7 @@ class Slack(object):
         logging.debug('POST {} {}'.format(method, message))
 
         response = requests.post(
-            url=self.BASE_URL + method,
+            url=url or self.BASE_URL + method,
             data=urllib.urlencode(message),
             headers=headers,
         )
@@ -102,8 +102,43 @@ class Slack(object):
     def post_message(self, message):
         return self.request('chat.postMessage', message)
 
-    def update_message(self, message):
-        return self.request('chat.update', message)
+    def update_message(self, message, url=None):
+        return self.request('chat.update', message, url=None)
 
     def delete_message(self, message):
         return self.request('chat.delete', message)
+
+    def post_ephemeral_message(self, payload):
+        logging.debug(payload)
+        return self.request('chat.postEphemeral', payload)
+
+    def get_message_permalink(self, payload):
+        return self.request('chat.getPermalink', payload)
+
+    def set_user_status(self, message):
+        return self.request('users.profile.set', message)
+
+    def set_dnd_snooze(self, message):
+        return self.request('dnd.setSnooze', message)
+
+    def get_user_presence(self, message):
+        return self.request('users.getPresence', message)
+
+    def search_message(self, message):
+        """
+        API Reference:
+            https://api.slack.com/methods/search.messages
+        """
+        message['as_user'] = True
+        return self.request('search.messages', message)
+
+    def get_user_profile(self):
+        return self.request(
+            'users.profile.get',
+            {
+                'as_user': True,
+            }
+        )
+
+    def user_info(self, user_id):
+        return self.request('users.info', {'user': user_id})
